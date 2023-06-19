@@ -7,7 +7,8 @@ import (
 	"cleara/internal/repositories/usersrepo"
 	"cleara/internal/server"
 	"context"
-	"github.com/jmoiron/sqlx"
+	"database/sql"
+	_ "github.com/lib/pq"
 	"log"
 	"os"
 	"time"
@@ -33,13 +34,13 @@ func main() {
 	httpServer.Initialize()
 }
 
-func openDB(ctx context.Context) (*sqlx.DB, error) {
+func openDB(ctx context.Context) (*sql.DB, error) {
 	var cfg, err = config.Load()
 	if err != nil {
 		return nil, err
 	}
 
-	db, err := sqlx.ConnectContext(ctx, "pgx", cfg.DatabaseURL)
+	db, err := sql.Open("postgres", cfg.DatabaseURL)
 	if err != nil {
 		return nil, err
 	}
@@ -49,6 +50,7 @@ func openDB(ctx context.Context) (*sqlx.DB, error) {
 	db.SetMaxIdleConns(cfg.MaxIdleConns)
 	// usamos time.ParseDuration para convertir el string de duracion a time.Duration
 	duration, err := time.ParseDuration(cfg.MaxIdleTime)
+
 	if err != nil {
 		return nil, err
 	}
@@ -56,14 +58,16 @@ func openDB(ctx context.Context) (*sqlx.DB, error) {
 	db.SetConnMaxIdleTime(duration)
 
 	// creamos el contexto con 5 segundos de timeout deadline
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx2, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	// PingContext
-	err = db.PingContext(ctx)
+	status := "up"
+	err = db.PingContext(ctx2)
 	if err != nil {
+		status = "down"
 		return nil, err
 	}
-
+	log.Println(status)
 	return db, nil
 }

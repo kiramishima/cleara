@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/jackc/pgx v3.6.2+incompatible
+	github.com/jackc/pgx/v5 v5.4.1
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/kelseyhightower/envconfig v1.4.0
 )
@@ -21,8 +22,11 @@ require (
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/jackc/fake v0.0.0-20150926172116-812a484cc733 // indirect
+	github.com/jackc/pgpassfile v1.0.0 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
+	github.com/kr/text v0.2.0 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/lib/pq v1.10.9 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
@@ -30,6 +34,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect

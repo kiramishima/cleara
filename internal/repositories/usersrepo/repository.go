@@ -5,17 +5,16 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	_ "github.com/jackc/pgx/stdlib"
-	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"strings"
 )
 
 type UserRepository struct {
-	db      *sqlx.DB
+	db      *sql.DB
 	context context.Context
 }
 
-func NewRepository(conn *sqlx.DB, ctx context.Context) *UserRepository {
+func NewRepository(conn *sql.DB, ctx context.Context) *UserRepository {
 	return &UserRepository{
 		db:      conn,
 		context: ctx,
@@ -25,8 +24,11 @@ func NewRepository(conn *sqlx.DB, ctx context.Context) *UserRepository {
 func (repo *UserRepository) GetProfile(id string) (domain.User, error) {
 	if v := strings.TrimSpace(id); v != "" {
 		var user domain.User
-		query := "SELECT * FROM users WHERE id = $1"
-		err := repo.db.GetContext(repo.context, &user, query, id)
+		query := "SELECT * FROM customer WHERE id = $1"
+		err := repo.db.QueryRowContext(repo.context, query, id).Scan(
+			&user.ID,
+			&user.Name,
+		)
 		if err != nil {
 			if err != sql.ErrNoRows {
 				return domain.User{}, err

@@ -2,6 +2,7 @@ package users
 
 import (
 	"cleara/internal/core/ports"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,6 +23,6 @@ func (userSrv *UserHandlers) GetProfile(c *gin.Context) {
 		c.AbortWithStatusJSON(500, gin.H{"message": err.Error()})
 		return
 	}
-	println(userProfile)
+	fmt.Println(userProfile)
 	c.JSON(200, userProfile)
 }

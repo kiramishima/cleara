@@ -17,9 +17,9 @@ func New(repository ports.UserRepository) *UserService {
 }
 
 func (srv *UserService) GetProfile(id string) (domain.User, error) {
-	userProfile, err := srv.GetProfile(id)
+	userProfile, err := srv.usersRepository.GetProfile(id)
 	if err != nil {
-		return domain.User{}, errors.New("No user found")
+		return domain.User{}, errors.New("no user found")
 	}
 	return userProfile, nil
 }

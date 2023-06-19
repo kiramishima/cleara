@@ -21,7 +21,7 @@ func (s *Server) Initialize() {
 	v1 := app.Group("/v1")
 
 	userRoutes := v1.Group("/users")
-	userRoutes.GET("/users/:id", s.userHandlers.GetProfile)
+	userRoutes.GET("/:id", s.userHandlers.GetProfile)
 
 	err := app.Run(":5000")
 	if err != nil {
