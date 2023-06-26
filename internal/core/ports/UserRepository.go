@@ -6,11 +6,11 @@ import (
 )
 
 type UserRepository interface {
-	GetProfile(id string) (domain.User, error)
+	GetProfile(id string) (*domain.User, error)
 }
 
 type UserService interface {
-	GetProfile(id string) (domain.User, error)
+	GetProfile(id string) (*domain.User, error)
 }
 
 type UserHandlers interface {

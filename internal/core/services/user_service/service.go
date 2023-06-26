@@ -3,7 +3,6 @@ package user_service
 import (
 	"cleara/internal/core/domain"
 	"cleara/internal/core/ports"
-	"errors"
 )
 
 type UserService struct {
@@ -16,10 +15,10 @@ func New(repository ports.UserRepository) *UserService {
 	}
 }
 
-func (srv *UserService) GetProfile(id string) (domain.User, error) {
+func (srv *UserService) GetProfile(id string) (*domain.User, error) {
 	userProfile, err := srv.usersRepository.GetProfile(id)
 	if err != nil {
-		return domain.User{}, errors.New("no user found")
+		return nil, err
 	}
 	return userProfile, nil
 }

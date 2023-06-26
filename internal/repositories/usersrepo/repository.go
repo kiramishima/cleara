@@ -2,9 +2,10 @@ package usersrepo
 
 import (
 	"cleara/internal/core/domain"
+	"cleara/internal/repositories"
 	"context"
 	"database/sql"
-	"errors"
+	"fmt"
 	_ "github.com/lib/pq"
 	"strings"
 )
@@ -21,20 +22,31 @@ func NewRepository(conn *sql.DB, ctx context.Context) *UserRepository {
 	}
 }
 
-func (repo *UserRepository) GetProfile(id string) (domain.User, error) {
+// GetProfile Method for retrieve user profile by id
+func (repo *UserRepository) GetProfile(id string) (*domain.User, error) {
 	if v := strings.TrimSpace(id); v != "" {
-		var user domain.User
-		query := "SELECT * FROM customer WHERE id = $1"
-		err := repo.db.QueryRowContext(repo.context, query, id).Scan(
+		stmt, err := repo.db.PrepareContext(repo.context, "SELECT * FROM customer WHERE id = $1")
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", repositories.ErrPrepareStatement, err)
+		}
+		defer stmt.Close()
+
+		var user = &domain.User{}
+
+		row := stmt.QueryRowContext(repo.context, id)
+
+		err = row.Scan(
 			&user.ID,
 			&user.Name,
 		)
 		if err != nil {
 			if err != sql.ErrNoRows {
-				return domain.User{}, err
+				return nil, repositories.ErrUserProfileNotFound
+			} else {
+				return nil, fmt.Errorf("%s: %w", repositories.ErrScanData, err)
 			}
 		}
 		return user, nil
 	}
-	return domain.User{}, errors.New("user no found")
+	return nil, repositories.ErrUserProfileNotFound
 }
