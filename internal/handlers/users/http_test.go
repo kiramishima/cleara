@@ -14,17 +14,17 @@ import (
 	"testing"
 )
 
-func TestGetBook(t *testing.T) {
+func TestGetProfile(t *testing.T) {
 	testCases := map[string]struct {
 		ID            any
 		buildStubs    func(uc *mock.MockUserService)
 		checkResponse func(t *testing.T, recorder *httptest.ResponseRecorder)
 	}{
 		"OK": {
-			ID: 1,
+			ID: "1",
 			buildStubs: func(uc *mock.MockUserService) {
 				uc.EXPECT().
-					GetProfile(gomock.Any(), gomock.Eq(1)).
+					GetProfile(gomock.Eq(1)).
 					Times(1).
 					Return(&domain.User{}, nil)
 			},
@@ -36,7 +36,7 @@ func TestGetBook(t *testing.T) {
 			ID: "ID",
 			buildStubs: func(uc *mock.MockUserService) {
 				uc.EXPECT().
-					GetProfile(gomock.Any(), gomock.Any()).
+					GetProfile(gomock.Any()).
 					Times(0)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
@@ -47,7 +47,7 @@ func TestGetBook(t *testing.T) {
 			ID: 1,
 			buildStubs: func(uc *mock.MockUserService) {
 				uc.EXPECT().
-					GetProfile(gomock.Any(), gomock.Any()).
+					GetProfile(gomock.Any()).
 					Times(1).
 					Return(nil, repoErr.ErrUserProfileNotFound)
 			},
@@ -59,7 +59,7 @@ func TestGetBook(t *testing.T) {
 			ID: 1,
 			buildStubs: func(uc *mock.MockUserService) {
 				uc.EXPECT().
-					GetProfile(gomock.Any(), gomock.Any()).
+					GetProfile(gomock.Any()).
 					Times(1).
 					Return(nil, sql.ErrConnDone)
 			},
@@ -79,16 +79,16 @@ func TestGetBook(t *testing.T) {
 			recorder := httptest.NewRecorder()
 
 			url := fmt.Sprint("/v1/users/", tc.ID)
+			println("url", url)
 			request, err := http.NewRequest(http.MethodGet, url, nil)
 			assert.NoError(t, err)
 
 			app := gin.New()
-			// v1 := app.Group("/v1")
+			v1 := app.Group("/v1")
+			userRoutes := v1.Group("/users")
 
-			// userRoutes := v1.Group("/users")
-
-			_ = NewUserHandlers(uc)
-			// userRoutes.GET("/:id", userHandlers.GetProfile)
+			var userHandlers = NewUserHandlers(uc)
+			userRoutes.GET("/:id", userHandlers.GetProfile)
 			app.ServeHTTP(recorder, request)
 			tc.checkResponse(t, recorder)
 		})

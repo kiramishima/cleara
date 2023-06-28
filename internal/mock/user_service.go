@@ -39,7 +39,7 @@ func (m *MockUserService) GetProfile(id string) (*domain.User, error) {
 }
 
 // GetProfile indicates an expected call of GetProfile.
-func (mr *MockUserServiceMockRecorder) GetProfile(ctx, id interface{}) *gomock.Call {
+func (mr *MockUserServiceMockRecorder) GetProfile(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProfile", reflect.TypeOf((*MockUserService)(nil).GetProfile), ctx, id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProfile", reflect.TypeOf((*MockUserService)(nil).GetProfile), id)
 }
